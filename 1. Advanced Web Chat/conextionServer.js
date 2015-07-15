@@ -45,7 +45,15 @@ wsServer.on('request', function(request) {
             console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
             //connection.sendBytes(message.binaryData);
         }
-        connection.send("OK!");
+    });
+    var readline = require('readline');
+        
+    var rl = readline.createInterface({
+        input:process.stdin,
+        output:process.stdout
+    });
+    rl.on('line',function(cmd){
+        connection.send(cmd);
     });
     connection.on('close', function(reasonCode, description) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');

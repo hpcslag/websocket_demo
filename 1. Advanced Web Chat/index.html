@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Test connextion!</title>
+</head>
+Say: <input type="text" name="msg" onkeypress="call(event)">
+<div id="ac"></div>
+<body>
+
+<script type="text/javascript">
+	function call(e){
+		console.log(e.keyCode);
+		var msg = document.getElementsByName("msg")[0].value;
+		if(e.keyCode == 13){
+			//send
+			ws.send(msg);
+			add(msg,"You: ")
+		}
+
+	}
+	function create(htmlStr) { //create HTML element of string
+	    var frag = document.createDocumentFragment(),
+	        temp = document.createElement('div');
+	    temp.innerHTML = htmlStr;
+	    while (temp.firstChild) {
+	        frag.appendChild(temp.firstChild);
+	    }
+	    return frag;
+	}
+
+	function add(msg,who){
+		var newMsg = create("<p>"+who+": "+msg+"<p>");
+		var e = document.getElementById("ac");
+		e.insertBefore(newMsg,e.firstChild);
+	}
+
+	var ws = new WebSocket("ws://localhost:81","echo-protocol");
+	ws.onopen = function(event){
+		console.log("Send Test Message: ");
+		ws.send("Test Message");
+	}
+	ws.onmessage = function (event){
+		console.log("Server say:" + event.data);
+		add(event.data,"Server")
+	}
+</script>
+</body>
+</html>
